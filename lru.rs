@@ -1,30 +1,30 @@
 use std::collections::HashMap;
 use std::collections::VecDeque;
 
-struct LRUCache {
-  map: HashMap<String, String>,
+struct LRUCache<T> {
+  map: HashMap<String, T>,
   que: VecDeque<String>,
   max_length: u8
 }
 
-impl LRUCache {
-  fn new() -> LRUCache {
+impl<T> LRUCache<T> {
+  fn new() -> LRUCache<T> {
     LRUCache { map: HashMap::new(), que: VecDeque::new(), max_length: 5 }
   }
 
-  fn put(&mut self, key: String, value: String) {
-    self.map.insert(key, value.clone());
+  fn put(&mut self, key: String, value: T) {
+    self.map.insert(key.clone(), value);
     if self.que.len() > 0 {
       let mut i = 0;
       let mut del_index = 0;
       for el in self.que.iter() {
-        if value.as_str() == el {
+        if key.as_str() == el {
           del_index = i;
         }
         i += 1;
       }
       self.que.remove(del_index);
-      self.que.push_front(value.clone());
+      self.que.push_front(key.clone());
     }
     if (self.que.len() as u8) > self.max_length {
       if let Some(last_el) = self.que.pop_back() {
@@ -33,12 +33,8 @@ impl LRUCache {
     }
   }
 
-  fn get(&self, key: String) -> Option<String> {
-    if let Some(v) = self.map.get(&key) {
-      Some(v.to_string())
-    } else {
-      None
-    }
+  fn get(&self, key: String) -> Option<&T> {
+    self.map.get(&key)
   }
 }
 
@@ -49,8 +45,8 @@ fn main() {
   cache.put("kasturi".to_string(), "61".to_string());
   cache.put("vijay".to_string(), "67".to_string());
 
-  if let Some(cache_value) = cache.get("sandeep".to_string()) {
-    println!("{}", cache_value);
+  if let Some(cache_value) = cache.get("kasturi".to_string()) {
+    println!("{:?}", cache_value);
   } else {
     println!("Not found in cache");
   }
