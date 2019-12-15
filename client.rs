@@ -12,5 +12,5 @@ fn main() {
 	} else {
 		println!("Could not read data into the buffer");
 	}
-	fs::write("facebook.html", buffer).expect("could not write to file");
+	fs::write("facebook.html", str::from_utf8(&buffer)).expect("could not write to file");
 }
